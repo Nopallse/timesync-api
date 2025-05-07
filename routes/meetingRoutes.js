@@ -27,8 +27,6 @@ router.get('/:meetingId/timeslots', meetingController.getMeetingTimeSlots);
 // Get available time slots for a meeting
 router.get('/:meetingId/availability', meetingController.getMeetingAvailability);
 
-// Get available time slots for a meeting
-router.get('/:meetingId/availability', meetingController.getMeetingAvailability);
 
 // Submit availability for a meeting
 router.post('/:meetingId/availability', meetingController.submitAvailability);

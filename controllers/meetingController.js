@@ -961,12 +961,11 @@ exports.getMeetingAvailability = async (req, res) => {
 };
 
 
-
 // Submit user availability
 exports.submitAvailability = async (req, res) => {
   try {
     const { meetingId } = req.params;
-    const { availableDates } = req.body;
+    const { availableSlots } = req.body;
     
     // Find the meeting
     const meeting = await Meeting.findByPk(meetingId, {
@@ -1000,15 +999,15 @@ exports.submitAvailability = async (req, res) => {
       }
     });
     
-    // Create new availability slots
+    // Create new availability slots with specific start and end times
     const slots = await Promise.all(
-      availableDates.map(date => {
+      availableSlots.map(slot => {
         return AvailabilitySlot.create({
           meetingId,
           userId: req.user.id,
-          date,
-          startTime: meeting.timeRangeStart,
-          endTime: meeting.timeRangeEnd
+          date: slot.date,
+          startTime: slot.startTime,
+          endTime: slot.endTime
         });
       })
     );
@@ -1021,19 +1020,22 @@ exports.submitAvailability = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Availability submitted successfully',
-      availableDates: slots.map(slot => slot.date),
+      availableSlots: slots.map(slot => ({
+        date: slot.date,
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      })),
     });
-    }
-    catch (error) {
+  }
+  catch (error) {
     console.error('Error submitting availability:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to submit availability',
       error: error.message,
     });
-    }
-    }
-
+  }
+}
 
     // Schedule a meeting at a specific time
 exports.scheduleMeeting = async (req, res) => {

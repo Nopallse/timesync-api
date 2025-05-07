@@ -20,6 +20,7 @@ const getCalendarClient = (user) => {
 exports.getEvents = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
+    console.log(req.query, 'query params');
     
     if (!startDate || !endDate) {
       return res.status(400).json({
